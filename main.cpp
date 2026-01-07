@@ -22,7 +22,7 @@ int main()
     std::string apiKey; // apply personal API key from Finnhub
     std::string symbol;
     double targetPrice;
-
+    std::cout << "----------------------------------------" << std::endl;
     std::cout << " Finnhub API Key: ";
     std::cin >> apiKey;
     std::cout << " Code of Stock (e.g. AAPL): ";
@@ -30,6 +30,8 @@ int main()
     std::cout << " The alarm price: ";
     std::cin >> targetPrice;
     std::cout << "Monitoring " << symbol << "... Target price: " << targetPrice << std::endl;
+    std::cout << "Press Ctrl+C to stop." << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
 
     // handle Ctrl+C
     signal(SIGINT, signalHandler);
