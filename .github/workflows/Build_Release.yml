@@ -27,7 +27,7 @@ jobs:
 
     - name: Install Dependencies via vcpkg
       run: |
-        ./vcpkg/vcpkg install curl nlohmann-json --triplet x64-windows
+        ./vcpkg/vcpkg install curl nlohmann-json --triplet x64-windows-static
       shell: pwsh
     
     #- name: Configure CMake
@@ -35,9 +35,9 @@ jobs:
     #  shell: pwsh
 
     - name: Configure CMake
-      # 使用绝对路径 + 双引号，防止任何路径解析错误
+      # 增加了一个参数: -DVCPKG_TARGET_TRIPLET=x64-windows-static
       run: |
-        cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release
+        cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DVCPKG_TARGET_TRIPLET=x64-windows-static
       shell: pwsh
 
     - name: Build Project
