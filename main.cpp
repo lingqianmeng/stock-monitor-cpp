@@ -19,7 +19,7 @@ void signalHandler(int signum) {
 }
 
 int main() {
-    std::string apiKey; // apply personal API key from Finnhub
+    std::string apiKey; // apply personal API key from API provider
     std::string symbol;
     double targetPrice;
     int choice;
