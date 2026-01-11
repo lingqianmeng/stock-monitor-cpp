@@ -29,9 +29,15 @@ jobs:
       run: |
         ./vcpkg/vcpkg install curl nlohmann-json --triplet x64-windows
       shell: pwsh
+    
+    #- name: Configure CMake
+    # run: cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release
+    #  shell: pwsh
 
     - name: Configure CMake
-      run: cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release
+      # 使用绝对路径 + 双引号，防止任何路径解析错误
+      run: |
+        cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release
       shell: pwsh
 
     - name: Build Project
