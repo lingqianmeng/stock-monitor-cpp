@@ -1,5 +1,5 @@
+[![Build and Release](https://github.com/lingqianmeng/stock-monitor-cpp/actions/workflows/Build_Release.yml/badge.svg)](https://github.com/lingqianmeng/stock-monitor-cpp/actions/workflows/Build_Release.yml)
 # Stock Monitor C++ 📈
-
 ![C++](https://img.shields.io/badge/C++-17-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![Build](https://img.shields.io/badge/build-CMake-orange.svg) ![Dependencies](https://img.shields.io/badge/vcpkg-enabled-purple.svg)
 
 A high-performance, multi-threaded C++ application designed to monitor real-time stock prices. The system fetches live market data via **Finnhub API** and triggers instant **SMS notifications** through **Twilio** when a target price threshold is reached.
