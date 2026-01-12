@@ -6,6 +6,7 @@ on:
     tags: [ "v*" ] # Triggers release flow when you push a tag like v1.0.0
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch: # Add this line for manual triggering of the workflow
 
 jobs:
   build-windows:
