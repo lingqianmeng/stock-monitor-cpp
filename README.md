@@ -23,6 +23,7 @@ A high-performance, multi-threaded C++ application designed to monitor real-time
 * **Build System**: CMake (>= 3.15)
 * **Package Manager**: vcpkg (Manifest Mode)
 * **Notification Service**: Twilio REST API
+* **Stock Price**: Finnhub and FMP
 
 ## 🚀 Quick Start
 
@@ -35,9 +36,10 @@ Ensure the following tools are installed on your system:
 
 ### 2. Configuration (API Keys)
 
-You will need to obtain API keys from the following providers:
-* **Stock Data**: [Finnhub](https://finnhub.io/) (Free tier available).
-* **SMS Service**: [Twilio](https://www.twilio.com/) (Account SID, Auth Token, and a Twilio phone number).
+You will need to obtain API keys, Token and phone number from the following providers for free:
+* **Stock Data Nasdaq**: [Finnhub](https://finnhub.io/) -> API Key
+* **Stock Data DAX**: [FMP](https://site.financialmodelingprep.com/) -> API Key
+* **SMS Service**: [Twilio](https://www.twilio.com/) -> Account SID, Auth Token, and a Twilio phone number -> Register for Whatsapp messages with your own phone number.
 
 ### 3. Build Instructions
 
@@ -46,12 +48,20 @@ You will need to obtain API keys from the following providers:
 git clone https://github.com/lingqianmeng/stock-monitor-cpp.git
 cd stock-monitor-cpp
 
-# Create build directory
-mkdir build
-cd build
+# Configure project
+cmake -S . -B build
 
-# Configure the project with vcpkg toolchain (replace [vcpkg_path] with your actual path)
-cmake .. "-DCMAKE_TOOLCHAIN_FILE=[vcpkg_path]/scripts/buildsystems/vcpkg.cmake"
+# Build project
+cmake --build build
+```
 
-# Build the executable
-cmake --build .
+### 4. Configuration (secrets.json)
+
+The last step is to configure the secrets.json file 
+  ```bash
+  cp secrets.example.json secrets.json
+  ```
+* Fill in the real values: Open secrets.json and replace the placeholders with your actual data from Twilio, Finnhub and FMP and your own number for Whatsapp.
+* Check your .gitignore: Ensure secrets.json is listed so you don't accidentally push it.
+* The secrets.json file should be included together with exe within the same folder or at least same project folder. As long as the secrets.json file is less than two layers higher than the directory of exe, then it can be loaded into program.
+
