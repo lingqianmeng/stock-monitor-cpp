@@ -4,13 +4,16 @@
 #include <chrono>
 #include <csignal>
 #include "getStockPrice.hpp"
+#include "sendSMS.hpp"
+#include "configSecrets.hpp"
 
 bool volatile stopFlag = false;
 #define waitingTime 30  // check price every 30 seconds
 #define DAX         1
 #define NASDAQ      2
 
-
+// define global config variable, declared in configSecrets.hpp
+AppConfig config;
 
 // signal handler to catch Ctrl+C/interrupt
 void signalHandler(int signum) {
@@ -19,11 +22,22 @@ void signalHandler(int signum) {
 }
 
 int main() {
-    std::string apiKey; // apply personal API key from API provider
     std::string symbol;
     double targetPrice;
     int choice;
     double currentPrice = 0.0;
+
+    // load secrets from file
+    // handle exceptions if file not found or parsing error
+    try {
+        if (!loadSecrets(config)) {
+            return 1;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "FATAL ERROR: " << e.what() << std::endl;
+        std::cerr << "Make sure secrets.json is in the same folder you are running from!" << std::endl;
+        return 1;
+    }
 
     std::cout << "----------------------------------------" << std::endl;
     std::cout << " Welcome to Stock Monitor!" << std::endl;
@@ -34,11 +48,9 @@ int main() {
     std::cin >> choice;
     std::cout << "----------------------------------------" << std::endl;
     if (choice == DAX) {
-        std::cout << " Give your FMP API Key: ";
-        std::cin >> apiKey;
+        std::cout << "You have chosen DAX!" << std::endl;
     } else if (choice == NASDAQ) {
-        std::cout << " Give your Finnhub API Key: ";
-        std::cin >> apiKey;
+        std::cout << "You have chosen NASDAQ!" << std::endl;
     } else {
         std::cout << " Invalid choice. Exiting." << std::endl;
         return 1;
@@ -57,17 +69,19 @@ int main() {
     while (!stopFlag) {
         if (choice == DAX){
             std::cout << "[DAX] Checking price for " << symbol << "..." << std::endl;
-            currentPrice = getStockPriceDAX(symbol, apiKey);
+            currentPrice = getStockPriceDAX(symbol, config.FMP_api_key);
             std::cout << "Current price: Euro " << currentPrice << std::endl;
         }  else if (choice == NASDAQ) {
             std::cout << "[NASDAQ] Checking price for " << symbol << "..." << std::endl;
-            currentPrice = getStockPriceNASDAQ(symbol, apiKey);
+            currentPrice = getStockPriceNASDAQ(symbol, config.finnhub_api_key);
             std::cout << "Current price: US-Dollar " << currentPrice << std::endl;
         }      
 
         if (currentPrice >= targetPrice) {
             std::cout << " Target price triggered! Sending notification..." << std::endl;
-            // Todo: add code to send email or SMS notification
+            // send SMS notification
+            std::string message = "Alert: " + symbol + " has reached the target price of " + std::to_string(targetPrice) + ". Current price: " + std::to_string(currentPrice);
+            sendSMS(message, config.my_phone_number); 
             break; 
         }
 

@@ -3,7 +3,6 @@
 #include "getStockPrice.hpp"
 #include <iostream>
 
-
 using json = nlohmann::json;
 
 // callback function to write received data into a string
