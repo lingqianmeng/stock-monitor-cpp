@@ -11,9 +11,8 @@ A high-performance, multi-threaded C++ application designed to monitor real-time
 * **Real-time Monitoring**: High-frequency price polling using `libcurl` for efficient REST API communication.
 * **Multi-threaded Engine**: Each stock is monitored in its own independent thread, ensuring no latency interference between different assets.
 * **SMS Alerts**: Seamless integration with the Twilio API to provide mobile notifications even when the app is running in the background.
-* **Modern C++ Stack**: Built with C++17, utilizing `std::chrono` for timing and `std::mutex` for thread-safe console logging.
 * **Professional Dependency Management**: Uses `vcpkg` in Manifest Mode for reproducible and easy-to-setup development environments.
-* **Cross-Platform UI Support**: Optimized for Windows PowerShell/CMD with UTF-8 support for localized character display.
+* **Secure Credential Management**: Sensitive API keys are isolated in a locally stored `secrets.json` file protected by .gitignore, ensuring there is no threat of private credentials being revealed to version control.
 
 ## 🛠️ Technical Stack
 
