@@ -3,12 +3,26 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <stdexcept>
+#include <filesystem>
 
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 bool loadSecrets(AppConfig& config) {
-    
-    std::ifstream file("secrets.json");
+    std::string filename = "secrets.json";
+
+    // try to locate the secrets.json file in multiple possible directories
+    fs::path filePath = fs::current_path() / filename;
+    // 1. If not found in current folder, check the parent folder
+    if (!fs::exists(filePath)) {
+        filePath = fs::current_path().parent_path() / filename;
+    }
+    // 2. If still not found, check the parent of the parent (e.g., from build/Debug to root)
+    if (!fs::exists(filePath)) {
+        filePath = fs::current_path().parent_path().parent_path() / filename;
+    }
+
+    std::ifstream file(filePath);
     if (!file.is_open()) {
         throw std::runtime_error("Could not open secrets file: secrets.json");
         return false;
