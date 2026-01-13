@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
-#include "sendSMS.hpp"
-#include "configSecrets.hpp" // for config variable
+#include "core/sendSMS.hpp"
+#include "core/configSecrets.hpp" // for config variable
 
 bool sendSMS(const std::string& message, const std::string& to_number) {
     CURL* curl;

@@ -1,6 +1,6 @@
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
-#include "getStockPrice.hpp"
+#include "core/getStockPrice.hpp"
 #include <iostream>
 
 using json = nlohmann::json;

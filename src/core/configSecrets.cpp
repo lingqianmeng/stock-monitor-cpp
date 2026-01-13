@@ -1,5 +1,5 @@
 #include <fstream>
-#include "configSecrets.hpp"
+#include "core/configSecrets.hpp"
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <stdexcept>
