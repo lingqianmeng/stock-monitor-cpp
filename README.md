@@ -22,7 +22,7 @@ A high-performance, multi-threaded C++ application designed to monitor real-time
 * **Build System**: CMake (>= 3.15)
 * **Package Manager**: vcpkg (Manifest Mode)
 * **Notification Service**: Twilio REST API
-* **Stock Price**: Finnhub and FMP
+* **Stock Price**: Finnhub and FMP APIs
 
 ## 🚀 Quick Start
 
