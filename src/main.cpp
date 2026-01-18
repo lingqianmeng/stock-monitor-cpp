@@ -2,17 +2,22 @@
 #include <string>
 #include <thread>
 #include <csignal>
+#include <vector>
 #include "core/getStockPrice.hpp"
 #include "core/sendSMS.hpp"
 #include "core/configSecrets.hpp"
 #include "main.hpp"
 #include "core/monitorStock.hpp"
+#include "core/loadStocks.hpp"
 
 // define global stop flag, declared in main.hpp
 volatile bool stopFlag = false;
 
 // define global config variable, declared in configSecrets.hpp
 AppConfig config;
+
+Stocks daxStocks;
+Stocks nasdaqStocks;
 
 // signal handler to catch Ctrl+C/interrupt
 void signalHandler(int signum) {
@@ -24,6 +29,25 @@ int main() {
     std::string symbol;
     double targetPrice;
     int choice;
+    try {
+        if (!loadStocks(daxStocks, DAX)) {
+            return 1;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "FATAL ERROR: " << e.what() << std::endl;
+        std::cerr << "Failed to load DAX stocks" << std::endl;
+        return 1;
+    }
+
+    try {
+        if (!loadStocks(nasdaqStocks, NASDAQ)) {
+            return 1;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "FATAL ERROR: " << e.what() << std::endl;
+        std::cerr << "Failed to load NASDAQ stocks" << std::endl;
+        return 1;
+    }
     
     // load secrets from file
     // handle exceptions if file not found or parsing error
@@ -37,6 +61,25 @@ int main() {
         return 1;
     }
 
+    // handle Ctrl+C
+    signal(SIGINT, signalHandler);
+
+    std::vector<std::thread> threads;
+
+    for (const auto& stock : daxStocks.stocks) {
+        threads.push_back(std::thread(monitorStock, stock.stockMarket, stock.symbol, stock.targetPrice, std::ref(config)));
+    }
+
+    for (const auto& stock : nasdaqStocks.stocks) {
+        threads.push_back(std::thread(monitorStock, stock.stockMarket, stock.symbol, stock.targetPrice, std::ref(config)));
+    }
+
+    // Keep program alive
+    for (auto& t : threads) {
+        if (t.joinable()) t.join();
+    }
+
+    /*Ver 2.0.0 
     std::cout << "----------------------------------------" << std::endl;
     std::cout << " Welcome to Stock Monitor!" << std::endl;
     std::cout << " Choose your stock market: " << std::endl;
@@ -60,11 +103,10 @@ int main() {
     std::cout << "Monitoring " << symbol << "... Target price: " << targetPrice << std::endl;
     std::cout << "Press Ctrl+C to stop..." << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-
-    // handle Ctrl+C
-    signal(SIGINT, signalHandler);
-
     monitorStock(choice, symbol, targetPrice, config);
+    */
+
+
 
     return 0;
 }

@@ -10,7 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Since your headers are in src/core, we tell CMake to look there.
-# This fixes "fatal error: InventoryManager.h: No such file or directory"
+# This fixes "fatal error: InventoryManager.h: No such file or directory" 
+# 18.01.2026: "old-school" way to include directories. Instead, we will use target_include_directories below.
 # include_directories(src/core)
 
 # find and link CURL and nlohmann_json
@@ -25,6 +26,8 @@ add_executable(StockMonitor
     ${CORE_SOURCES}       # Include all src/core files here
 )
 
+# Include the src directory for header files
+# src/core is included automatically since we used GLOB for CORE_SOURCES
 target_include_directories(StockMonitor PRIVATE src)
 
 # Link the libraries
