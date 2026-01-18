@@ -1,0 +1,22 @@
+{
+  "settings_Nasdaq": {
+    "update_interval_seconds": 30,
+    "currency": "USD"
+  },
+  "settings_DAX": {
+    "update_interval_seconds": 125,
+    "currency": "EUR"
+  },
+  "watchlist": [
+    { "symbol": "AAPL", "target": 190.50, "market": "NASDAQ" },
+    { "symbol": "MSFT", "target": 320.00, "market": "NASDAQ" },
+    { "symbol": "GOOGL", "target": 140.00, "market": "NASDAQ" },
+    { "symbol": "AMZN", "target": 130.00, "market": "NASDAQ" },
+    { "symbol": "META", "target": 180.00, "market": "NASDAQ" },
+    { "symbol": "BMW.DE", "target": 85.00, "market": "DAX" },
+    { "symbol": "SAP.DE", "target": 130.00, "market": "DAX" },
+    { "symbol": "DAI.DE", "target": 75.00, "market": "DAX" },
+    { "symbol": "VOW3.DE", "target": 220.00, "market": "DAX" },
+    { "symbol": "BAS.DE", "target": 70.00, "market": "DAX" }
+  ]
+}
