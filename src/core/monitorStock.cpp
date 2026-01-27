@@ -10,7 +10,7 @@
 // Only one thread can hold the lock at a time to print to console
 std::mutex consoleMutex;
 
-void monitorStock(const int choice, const std::string& symbol, const double targetPrice, const int waitingTime, const AppConfig& config) {
+void monitorStock(const int choice, const std::string& symbol, const double targetLowPrice, const double targetHighPrice, const int waitingTime, const AppConfig& config) {
     double currentPrice = 0.0;
     while (!stopFlag) {
         // --- THE PROTECTED SECTION ---
@@ -19,23 +19,33 @@ void monitorStock(const int choice, const std::string& symbol, const double targ
         std::lock_guard<std::mutex> lock(consoleMutex); 
         if (choice == DAX) {
             std::cout << "[DAX] Checking price for " << symbol << "..." << std::endl;
-            std::cout << "Target Price: Euro " << targetPrice << std::endl;
+            std::cout << "Target Price Low: Euro " << targetLowPrice << std::endl;
+            std::cout << "Target Price High: Euro " << targetHighPrice << std::endl;
             currentPrice = getStockPriceDAX(symbol, config.FMP_api_key);
             std::cout << "Current price: Euro " << currentPrice << std::endl;
         }  else if (choice == NASDAQ) {
             std::cout << "[NASDAQ] Checking price for " << symbol << "..." << std::endl;
-            std::cout << "Target Price: US-Dollar " << targetPrice << std::endl;
+            std::cout << "Target Price Low: US-Dollar " << targetLowPrice << std::endl;
+            std::cout << "Target Price High: US-Dollar " << targetHighPrice << std::endl;
             currentPrice = getStockPriceNASDAQ(symbol, config.finnhub_api_key);
             std::cout << "Current price: US-Dollar " << currentPrice << std::endl;
         }      
 
-        if (currentPrice >= targetPrice) {
+        if (currentPrice >= targetHighPrice) {
             std::cout << " Target price triggered! Sending notification..." << std::endl;
             // send SMS notification
-            std::string message = "Alert: " + symbol + " has reached the target price of " + std::to_string(targetPrice) + ". Current price: " + std::to_string(currentPrice);
+            std::string message = "Alert: " + symbol + " has reached the target HIGH price of " + std::to_string(targetHighPrice) + ". Current price: " + std::to_string(currentPrice);
             sendSMS(message, config.my_phone_number); 
             break; 
         }
+        
+        if (currentPrice <= targetLowPrice) {
+            std::cout << " Target price triggered! Sending notification..." << std::endl;
+            // send SMS notification
+            std::string message = "Alert: " + symbol + " has dropped to the target LOW price of " + std::to_string(targetLowPrice) + ". Current price: " + std::to_string(currentPrice);
+            sendSMS(message, config.my_phone_number); 
+            break; 
+        } 
         
         // check price every waitingTime seconds to avoid rate limit of free API
         std::cout << "Waiting for next check after " << waitingTime << " seconds..." << std::endl;
@@ -50,5 +60,5 @@ void monitorStock(const int choice, const std::string& symbol, const double targ
 }
 
 void monitorStockThreadWrapper(const Stock& stock, const Stocks& stocks, const AppConfig& config) {
-    monitorStock(stock.stockMarket, stock.symbol, stock.targetPrice, stocks.update_interval_seconds, config);
+    monitorStock(stock.stockMarket, stock.symbol, stock.targetLowPrice, stock.targetHighPrice, stocks.update_interval_seconds, config);
 }

@@ -38,7 +38,8 @@ bool loadStocks(Stocks& stocksToLoad, int stockMarket) {
                 stocksToLoad.stocks.push_back({
                     item["market"].get<int>(),
                     item["symbol"].get<std::string>(),
-                    item["target"].get<double>()
+                    item["target_low"].get<double>(),
+                    item["target_high"].get<double>()
                 });
             }
         } else if (stockMarket == DAX) {
@@ -49,7 +50,8 @@ bool loadStocks(Stocks& stocksToLoad, int stockMarket) {
                 stocksToLoad.stocks.push_back({
                     item["market"].get<int>(),
                     item["symbol"].get<std::string>(),
-                    item["target"].get<double>()
+                    item["target_low"].get<double>(),
+                    item["target_high"].get<double>()
                 });
             }
         } else {

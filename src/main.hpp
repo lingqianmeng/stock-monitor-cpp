@@ -12,7 +12,8 @@ extern volatile bool stopFlag;
 struct Stock {
     int stockMarket;
     std::string symbol;
-    double targetPrice;
+    double targetLowPrice;
+    double targetHighPrice;
 };
 
 struct Stocks {
