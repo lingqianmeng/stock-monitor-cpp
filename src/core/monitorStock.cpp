@@ -12,6 +12,10 @@ std::mutex consoleMutex;
 
 void monitorStock(const int choice, const std::string& symbol, const double targetLowPrice, const double targetHighPrice, const int waitingTime, const AppConfig& config) {
     double currentPrice = 0.0;
+    bool alertSentLow = false;
+    bool alertSentHigh = false;
+    const double priceBuffer = 0.01; // small buffer to prevent multiple alerts
+
     while (!stopFlag) {
         // --- THE PROTECTED SECTION ---
         {
@@ -32,20 +36,26 @@ void monitorStock(const int choice, const std::string& symbol, const double targ
         }      
 
         if (currentPrice >= targetHighPrice) {
-            std::cout << " Target price triggered! Sending notification..." << std::endl;
-            // send SMS notification
-            std::string message = "Alert: " + symbol + " has reached the target HIGH price of " + std::to_string(targetHighPrice) + ". Current price: " + std::to_string(currentPrice);
-            sendSMS(message, config.my_phone_number); 
-            break; 
+            if (!alertSentHigh) {
+                std::cout << " Target price triggered! Sending notification..." << std::endl;
+                std::string message = "Alert: " + symbol + " has reached the target HIGH price of " + std::to_string(targetHighPrice) + ". Current price: " + std::to_string(currentPrice);
+                sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
+                alertSentHigh = true; // set alert flag to avoid multiple notifications
+            }
+        } else if (currentPrice < targetHighPrice*(1-priceBuffer)) {
+            alertSentHigh = false; // reset alert flag when price goes below target high
         }
         
         if (currentPrice <= targetLowPrice) {
-            std::cout << " Target price triggered! Sending notification..." << std::endl;
-            // send SMS notification
-            std::string message = "Alert: " + symbol + " has dropped to the target LOW price of " + std::to_string(targetLowPrice) + ". Current price: " + std::to_string(currentPrice);
-            sendSMS(message, config.my_phone_number); 
-            break; 
-        } 
+            if (!alertSentLow) {
+                std::cout << " Target price triggered! Sending notification..." << std::endl;
+                std::string message = "Alert: " + symbol + " has dropped to the target LOW price of " + std::to_string(targetLowPrice) + ". Current price: " + std::to_string(currentPrice);
+                sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
+                alertSentLow = true; // set alert flag to avoid multiple notifications
+            }
+        } else if (currentPrice > targetLowPrice*(1+priceBuffer)) {
+            alertSentLow = false; // reset alert flag when price goes above target low
+        }
         
         // check price every waitingTime seconds to avoid rate limit of free API
         std::cout << "Waiting for next check after " << waitingTime << " seconds..." << std::endl;
