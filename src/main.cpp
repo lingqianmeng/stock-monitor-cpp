@@ -28,11 +28,11 @@ void signalHandler(int signum) {
 int main() {
     std::string symbol;
     double targetPrice;
-    int choice;
+    int choice; 
     try {
         if (!loadStocks(daxStocks, DAX)) {
             return 1;
-        }
+        } 
     } catch (const std::exception& e) {
         std::cerr << "FATAL ERROR: " << e.what() << std::endl;
         std::cerr << "Failed to load DAX stocks" << std::endl;
@@ -64,14 +64,18 @@ int main() {
     // handle Ctrl+C
     signal(SIGINT, signalHandler);
 
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << " Welcome to Stock Monitor!" << std::endl;
+
     std::vector<std::thread> threads;
 
     for (const auto& stock : daxStocks.stocks) {
-        threads.push_back(std::thread(monitorStock, stock.stockMarket, stock.symbol, stock.targetPrice, std::ref(config)));
+       // threads.push_back(std::thread(monitorStock, std::cref(stock), std::cref(daxStocks), std::cref(config)));
+        threads.push_back(std::thread(monitorStockThreadWrapper, std::cref(stock), std::cref(daxStocks), std::cref(config)));
     }
 
     for (const auto& stock : nasdaqStocks.stocks) {
-        threads.push_back(std::thread(monitorStock, stock.stockMarket, stock.symbol, stock.targetPrice, std::ref(config)));
+        threads.push_back(std::thread(monitorStockThreadWrapper, std::cref(stock), std::cref(nasdaqStocks), std::cref(config)));
     }
 
     // Keep program alive

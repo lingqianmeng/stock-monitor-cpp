@@ -6,7 +6,7 @@ set(CMAKE_TOOLCHAIN_FILE "C:/Users/binyi/projects/dependency/vcpkg/scripts/build
 project(StockMonitor)
 
 # Set C++17 standard to support filesystem library
-set(CMAKE_CXX_STANDARD 17) 
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Since your headers are in src/core, we tell CMake to look there.

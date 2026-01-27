@@ -10,7 +10,7 @@
 // Only one thread can hold the lock at a time to print to console
 std::mutex consoleMutex;
 
-void monitorStock(const int& choice, const std::string& symbol, const double targetPrice, const AppConfig& config) {
+void monitorStock(const int choice, const std::string& symbol, const double targetPrice, const int waitingTime, const AppConfig& config) {
     double currentPrice = 0.0;
     while (!stopFlag) {
         // --- THE PROTECTED SECTION ---
@@ -47,4 +47,8 @@ void monitorStock(const int& choice, const std::string& symbol, const double tar
         // sleep outside the locked section to allow other threads to proceed
         std::this_thread::sleep_for(std::chrono::seconds(waitingTime));
     }
+}
+
+void monitorStockThreadWrapper(const Stock& stock, const Stocks& stocks, const AppConfig& config) {
+    monitorStock(stock.stockMarket, stock.symbol, stock.targetPrice, stocks.update_interval_seconds, config);
 }
