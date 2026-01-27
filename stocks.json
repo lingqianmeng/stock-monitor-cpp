@@ -8,11 +8,11 @@
     "currency": "EUR"
   },
   "watchlist_Nasdaq": [
-    { "symbol": "AAPL", "target": 800.50, "market": 2 },
-    { "symbol": "MSFT", "target": 800.00, "market": 2 },
-    { "symbol": "GOOGL", "target": 800.00, "market": 2 },
-    { "symbol": "AMZN", "target": 800.00, "market": 2 },
-    { "symbol": "META", "target": 800.00, "market": 2 }
+    { "symbol": "AAPL", "target": 250.50, "market": 2 },
+    { "symbol": "MSFT", "target": 470.00, "market": 2 },
+    { "symbol": "GOOGL", "target": 333.00, "market": 2 },
+    { "symbol": "AMZN", "target": 238.00, "market": 2 },
+    { "symbol": "META", "target": 672.00, "market": 2 }
   ],
   "watchlist_DAX": [
     { "symbol": "BMW.DE", "target": 700.00, "market": 1 },
