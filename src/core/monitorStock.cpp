@@ -21,40 +21,50 @@ void monitorStock(const int choice, const std::string& symbol, const double targ
         {
         // The mutex is locked here
         std::lock_guard<std::mutex> lock(consoleMutex); 
-        if (choice == DAX) {
+        try {
+            if (choice == DAX) {
             std::cout << "[DAX] Checking price for " << symbol << "..." << std::endl;
             std::cout << "Target Price Low: Euro " << targetLowPrice << std::endl;
             std::cout << "Target Price High: Euro " << targetHighPrice << std::endl;
             currentPrice = getStockPriceDAX(symbol, config.FMP_api_key);
             std::cout << "Current price: Euro " << currentPrice << std::endl;
-        }  else if (choice == NASDAQ) {
+            }  else if (choice == NASDAQ) {
             std::cout << "[NASDAQ] Checking price for " << symbol << "..." << std::endl;
             std::cout << "Target Price Low: US-Dollar " << targetLowPrice << std::endl;
             std::cout << "Target Price High: US-Dollar " << targetHighPrice << std::endl;
             currentPrice = getStockPriceNASDAQ(symbol, config.finnhub_api_key);
             std::cout << "Current price: US-Dollar " << currentPrice << std::endl;
-        }      
-
-        if (currentPrice >= targetHighPrice) {
-            if (!alertSentHigh) {
-                std::cout << " Target price triggered! Sending notification..." << std::endl;
-                std::string message = "Alert: " + symbol + " has reached the target HIGH price of " + std::to_string(targetHighPrice) + ". Current price: " + std::to_string(currentPrice);
-                sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
-                alertSentHigh = true; // set alert flag to avoid multiple notifications
-            }
-        } else if (currentPrice < targetHighPrice*(1-priceBuffer)) {
-            alertSentHigh = false; // reset alert flag when price goes below target high
+            } 
+        } catch (const std::exception& e) {
+            std::cerr << "[ERROR] getStockPrice failed for " << symbol << ": " << e.what() << std::endl;
+            continue; // skip this iteration on error
         }
-        
-        if (currentPrice <= targetLowPrice) {
-            if (!alertSentLow) {
-                std::cout << " Target price triggered! Sending notification..." << std::endl;
-                std::string message = "Alert: " + symbol + " has dropped to the target LOW price of " + std::to_string(targetLowPrice) + ". Current price: " + std::to_string(currentPrice);
-                sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
-                alertSentLow = true; // set alert flag to avoid multiple notifications
+             
+        try {
+            if (currentPrice >= targetHighPrice) {
+                if (!alertSentHigh) {
+                    std::cout << " Target price triggered! Sending notification..." << std::endl;
+                    std::string message = "Alert: " + symbol + " has reached the target HIGH price of " + std::to_string(targetHighPrice) + ". Current price: " + std::to_string(currentPrice);
+                    sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
+                    alertSentHigh = true; // set alert flag to avoid multiple notifications
+                }
+            } else if (currentPrice < targetHighPrice*(1-priceBuffer)) {
+                alertSentHigh = false; // reset alert flag when price goes below target high
             }
-        } else if (currentPrice > targetLowPrice*(1+priceBuffer)) {
-            alertSentLow = false; // reset alert flag when price goes above target low
+        
+            if (currentPrice <= targetLowPrice) {
+                if (!alertSentLow) {
+                    std::cout << " Target price triggered! Sending notification..." << std::endl;
+                    std::string message = "Alert: " + symbol + " has dropped to the target LOW price of " + std::to_string(targetLowPrice) + ". Current price: " + std::to_string(currentPrice);
+                    sendSMS(message, config.my_phone_number); // send SMS/Whatapp notification
+                    alertSentLow = true; // set alert flag to avoid multiple notifications
+                }
+            } else if (currentPrice > targetLowPrice*(1+priceBuffer)) {
+                alertSentLow = false; // reset alert flag when price goes above target low
+            }    
+        } catch (const std::exception& e) {
+            std::cerr << "[ERROR] sendSMS for " << symbol << ": " << e.what() << std::endl;
+            continue; // skip this iteration on error
         }
         
         // check price every waitingTime seconds to avoid rate limit of free API
