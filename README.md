@@ -29,9 +29,21 @@ A high-performance, multi-threaded C++ application designed to monitor real-time
 ### 1. Prerequisites
 
 Ensure the following tools are installed on your system:
-* CMake
-* C++ Compiler (GCC, Clang, or MSVC)
-* [vcpkg](https://github.com/microsoft/vcpkg)
+
+- [CMake](https://cmake.org/download/) (>= 3.15)
+- C++ compiler (MSVC / Visual Studio 2022 Build Tools, GCC or Clang)
+- [Git](https://git-scm.com/)
+- [vcpkg](https://github.com/microsoft/vcpkg) with the environment variable `VCPKG_ROOT` set (one-time setup):
+
+```powershell
+cd C:\dev
+git clone https://github.com/microsoft/vcpkg.git
+.\vcpkg\bootstrap-vcpkg.bat
+[Environment]::SetEnvironmentVariable("VCPKG_ROOT", "C:\dev\vcpkg", "User")
+```
+
+> Reopen your terminal afterwards so that `VCPKG_ROOT` is available.
+> The location of vcpkg is up to you – CMake finds it via `VCPKG_ROOT`.
 
 ### 2. Configuration (API Keys)
 
