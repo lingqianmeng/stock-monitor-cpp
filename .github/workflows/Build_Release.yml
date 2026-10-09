@@ -25,16 +25,7 @@ jobs:
           ./vcpkg/bootstrap-vcpkg.bat
         }
       shell: pwsh
-
-    - name: Install Dependencies via vcpkg
-      run: |
-        ./vcpkg/vcpkg install curl nlohmann-json --triplet x64-windows-static
-      shell: pwsh
     
-    #- name: Configure CMake
-    # run: cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release
-    #  shell: pwsh
-
     - name: Configure CMake
       # 增加了一个参数: -DVCPKG_TARGET_TRIPLET=x64-windows-static
       run: |
