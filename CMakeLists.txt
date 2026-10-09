@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Save the vcpkg path here
-set(CMAKE_TOOLCHAIN_FILE "C:/Users/binyi/projects/dependency/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{VCPKG_ROOT})
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+endif()
 
 project(StockMonitor)
 
