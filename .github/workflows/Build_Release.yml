@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch: # Add this line for manual triggering of the workflow
+  permissions:
+    contents: read
 
 jobs:
   build-windows:
@@ -61,5 +63,15 @@ jobs:
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
