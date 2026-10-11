@@ -15,6 +15,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
 
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -30,14 +34,25 @@ jobs:
       shell: pwsh
     
     - name: Configure CMake
-      # 增加了一个参数: -DVCPKG_TARGET_TRIPLET=x64-windows-static
       run: |
         cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Release -DVCPKG_TARGET_TRIPLET=x64-windows-static
       shell: pwsh
+    
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: c-cpp
+        build-mode: manual
+        queries: security-extended
 
     - name: Build Project
       run: cmake --build build --config Release
       shell: pwsh
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:c-cpp"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
