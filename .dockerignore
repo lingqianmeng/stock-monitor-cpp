@@ -1,0 +1,8 @@
+.git
+.github
+build
+out
+vcpkg_installed
+.vscode
+.idea
+*.log
