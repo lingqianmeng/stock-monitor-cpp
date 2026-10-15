@@ -149,6 +149,8 @@ jobs:
         with:
           scan-type: image
           image-ref: stock-monitor-cpp
+          scanners: vuln                                                              # 41
+          skip-dirs: /opt/vcpkg/buildtrees,/opt/vcpkg/downloads,/opt/vcpkg/packages   # 41
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           format: sarif
