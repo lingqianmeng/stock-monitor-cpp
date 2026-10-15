@@ -117,7 +117,7 @@ jobs:
           sarif_file: trivy-fs.sarif
           category: trivy-fs
   
-  docker-build:                     # ← NEU: 2 Leerzeichen, wie repo-scan
+  docker-build:
     name: Docker Build
     runs-on: ubuntu-latest
     steps:
@@ -126,3 +126,17 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t stock-monitor-cpp .
+
+      - name: "Smoke test: Container startet"
+        run: docker run --rm stock-monitor-cpp
+
+      - name: "Smoke test: Binary vorhanden und ausführbar"
+        run: docker run --rm stock-monitor-cpp test -x /app/build/StockMonitor
+
+      - name: "Smoke test: keine fehlenden Bibliotheken"
+        run: |
+          docker run --rm stock-monitor-cpp ldd /app/build/StockMonitor
+          if docker run --rm stock-monitor-cpp ldd /app/build/StockMonitor | grep -q "not found"; then
+            echo "Fehlende Bibliotheken gefunden"
+            exit 1
+          fi

@@ -1,8 +1,16 @@
-.git
-.github
-build
-out
-vcpkg_installed
-.vscode
-.idea
-*.log
+# Build-Ausgaben und lokale Tools
+build/
+out/
+vcpkg/
+vcpkg_installed/
+.vs/
+.vscode/
+
+# Git und CI
+.git/
+.github/
+
+# Secrets – dürfen NIE ins Image
+secrets.json
+**/secrets.json
+*.env
