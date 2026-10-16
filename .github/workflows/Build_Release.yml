@@ -130,17 +130,23 @@ jobs:
       - name: Build Docker image
         run: docker build -t stock-monitor-cpp .
 
-      - name: "Smoke test: Container startet"
-        run: docker run --rm stock-monitor-cpp
+      - name: "Smoke test: binary present and executable"
+        run: docker run --rm stock-monitor-cpp test -x /usr/local/bin/StockMonitor
 
-      - name: "Smoke test: Binary vorhanden und ausführbar"
-        run: docker run --rm stock-monitor-cpp test -x /app/build/StockMonitor
-
-      - name: "Smoke test: keine fehlenden Bibliotheken"
+      - name: "Smoke test: no missing libraries"
         run: |
-          docker run --rm stock-monitor-cpp ldd /app/build/StockMonitor
-          if docker run --rm stock-monitor-cpp ldd /app/build/StockMonitor | grep -q "not found"; then
-            echo "Fehlende Bibliotheken gefunden"
+          docker run --rm stock-monitor-cpp ldd /usr/local/bin/StockMonitor
+          if docker run --rm stock-monitor-cpp ldd /usr/local/bin/StockMonitor | grep -q "not found"; then
+            echo "Missing libraries found"
+            exit 1
+          fi
+
+      - name: "Smoke test: runs as non-root"
+        run: |
+          uid=$(docker run --rm stock-monitor-cpp id -u)
+          echo "Container UID: $uid"
+          if [ "$uid" = "0" ]; then
+            echo "Container runs as root"
             exit 1
           fi
       # ---------- NEU: #38 image scan----------
