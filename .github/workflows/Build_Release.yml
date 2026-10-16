@@ -6,7 +6,13 @@ on:
     tags: [ "v*" ] # Triggers release flow when you push a tag like v1.0.0
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch: # Add this line for manual triggering of the workflow
+    types: [ opened, synchronize, reopened, labeled ] # NEW: "labeled" reruns when you add the full-scan label
+  workflow_dispatch: # For manual triggering of the workflow
+    inputs:        
+      full_scan:
+        description: "Run full Trivy scan (all severities, incl. unfixed)"
+        type: boolean
+        default: false
 
 permissions:
     contents: read
@@ -168,3 +174,20 @@ jobs:
         with:
           sarif_file: trivy-image.sarif
           category: trivy-image
+
+      - name: Trivy Image Scan (full overview, informational)
+        if: >-
+          inputs.full_scan == true ||
+          contains(github.event.pull_request.labels.*.name, 'full-scan') ||
+          contains(github.event.head_commit.message, '[full-scan]')
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: stock-monitor-cpp
+          scanners: vuln
+          skip-dirs: /opt/vcpkg/buildtrees,/opt/vcpkg/downloads,/opt/vcpkg/packages
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          format: table
+
+      - name: Show image size
+        run: docker images stock-monitor-cpp
