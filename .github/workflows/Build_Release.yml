@@ -168,3 +168,16 @@ jobs:
         with:
           sarif_file: trivy-image.sarif
           category: trivy-image
+
+      - name: Trivy Image Scan (after, table only)
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: stock-monitor-cpp
+          scanners: vuln
+          skip-dirs: /opt/vcpkg/buildtrees,/opt/vcpkg/downloads,/opt/vcpkg/packages
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          format: table
+
+      - name: Show image size
+        run: docker images stock-monitor-cpp
