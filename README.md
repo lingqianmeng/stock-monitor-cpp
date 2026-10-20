@@ -1,6 +1,6 @@
 [![Build and Release](https://github.com/lingqianmeng/stock-monitor-cpp/actions/workflows/Build_Release.yml/badge.svg)](https://github.com/lingqianmeng/stock-monitor-cpp/actions/workflows/Build_Release.yml)
 # Stock Monitor C++ 📈
-![C++](https://img.shields.io/badge/C++-17-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![Build](https://img.shields.io/badge/build-CMake-orange.svg) ![Dependencies](https://img.shields.io/badge/vcpkg-enabled-purple.svg)
+![C++](https://img.shields.io/badge/C++-20-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![Build](https://img.shields.io/badge/build-CMake-orange.svg) ![Dependencies](https://img.shields.io/badge/vcpkg-enabled-purple.svg)
 
 A high-performance, multi-threaded C++ application designed to monitor real-time stock prices. The system fetches live market data via **Finnhub API** and triggers instant **SMS notifications** through **Twilio** when a target price threshold is reached.
 
@@ -18,7 +18,7 @@ The project is built and secured by a **DevSecOps pipeline in GitHub Actions**: 
 * **🆕 Hardened Container Image:** Multi-stage Docker build running as a non-root user (UID 10001).
 ## 🛠️ Technical Stack
 
-* **Language**: C++17
+* **Language**: C++20
 * **Network**: [libcurl](https://curl.se/libcurl/) (HTTP/HTTPS requests)
 * **Data Parsing**: [nlohmann/json](https://github.com/nlohmann/json) (JSON serialization/deserialization)
 * **Build System**: CMake (>= 3.15)

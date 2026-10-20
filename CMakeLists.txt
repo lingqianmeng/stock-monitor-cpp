@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 # Save the vcpkg path here
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{VCPKG_ROOT})
@@ -7,7 +7,7 @@ endif()
 
 project(StockMonitor)
 
-# Set C++17 standard to support filesystem library
+# Set the required C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -34,6 +34,5 @@ target_include_directories(StockMonitor PRIVATE src)
 
 # Link the libraries
 target_link_libraries(StockMonitor PRIVATE CURL::libcurl nlohmann_json::nlohmann_json)
-
 
 
